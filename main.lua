@@ -1,29 +1,20 @@
 local Library = loadstring(game:HttpGet("https://githubusercontent.com"))()
-local Window = Library.CreateLib("Brainrot Stealer Hub", "Midnight")
+local Window = Library.CreateLib("Brainrot Hub", "Midnight")
 
--- Haupt-Tab
 local Main = Window:NewTab("Main")
-local Section = Main:NewSection("Spieler Mods")
+local Section = Main:NewSection("Player Mods")
 
-Section:NewSlider("WalkSpeed", "Ändere dein Tempo", 500, 16, function(s)
+Section:NewSlider("WalkSpeed", "Tempo", 500, 16, function(s)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
 end)
 
-Section:NewSlider("JumpPower", "Springe höher", 500, 50, function(s)
+Section:NewSlider("JumpPower", "Sprung", 500, 50, function(s)
     game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
 end)
 
-Section:NewButton("Anti-Ragdoll", "Du fällst nicht mehr hin", function()
+Section:NewButton("Anti-Ragdoll", "Nicht umfallen", function()
     local char = game.Players.LocalPlayer.Character
     if char:FindFirstChild("Ragdoll") then
         char.Ragdoll:Destroy()
     end
-end)
-
--- Teleport Tab
-local TP = Window:NewTab("Teleports")
-local TPSection = TP:NewSection("Basen")
-
-TPSection:NewButton("Teleport zur Mitte", "Bringt dich zum Spawner", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
 end)
