@@ -1,70 +1,63 @@
-local OrionLib = loadstring(game:HttpGet(('https://githubusercontent.com')))()
+-- Eigenes Menü (KEINE EXTERNEN LINKS = KEIN DNS-FEHLER)
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local SpeedBtn = Instance.new("TextButton")
+local StealBtn = Instance.new("TextButton")
 
-local Window = OrionLib:MakeWindow({
-    Name = "Ice Hub v2 | Steal a Brainrot", 
-    HidePremium = false, 
-    SaveConfig = true, 
-    ConfigFolder = "IceHubConfig"
-})
+ScreenGui.Parent = game.CoreGui
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.Position = UDim2.new(0.5, -100, 0.5, -75)
+Frame.Size = UDim2.new(0, 200, 0, 150)
+Frame.BorderSizePixel = 2
+Frame.Active = true
+Frame.Draggable = true
 
--- "Stealer" Tab (wie in deinem Screenshot)
-local StealerTab = Window:MakeTab({
-    Name = "Stealer",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+Title.Parent = Frame
+Title.Text = "ICE HUB LITE"
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+Title.TextColor3 = Color3.new(1, 1, 1)
 
-StealerTab:AddToggle({
-    Name = "Auto Steal UI",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoSteal = Value
-        while _G.AutoSteal do
-            task.wait(0.5)
-            local char = game.Players.LocalPlayer.Character
-            if char and char:FindFirstChild("HumanoidRootPart") then
+-- Speed Button
+SpeedBtn.Parent = Frame
+SpeedBtn.Text = "Speed: 100"
+SpeedBtn.Position = UDim2.new(0, 10, 0, 45)
+SpeedBtn.Size = UDim2.new(0, 180, 0, 35)
+SpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+SpeedBtn.TextColor3 = Color3.new(1, 1, 1)
+SpeedBtn.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
+end)
+
+-- Auto-Steal Toggle
+local stealing = false
+StealBtn.Parent = Frame
+StealBtn.Text = "Auto-Steal: AUS"
+StealBtn.Position = UDim2.new(0, 10, 0, 95)
+StealBtn.Size = UDim2.new(0, 180, 0, 35)
+StealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+StealBtn.TextColor3 = Color3.new(1, 1, 1)
+
+StealBtn.MouseButton1Click:Connect(function()
+    stealing = not stealing
+    StealBtn.Text = stealing and "Auto-Steal: AN" or "Auto-Steal: AUS"
+    StealBtn.BackgroundColor3 = stealing and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(40, 40, 40)
+    
+    if stealing then
+        spawn(function()
+            while stealing do
+                task.wait(0.5)
                 for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
                     if v:IsA("ProximityPrompt") then
-                        -- Prüft Distanz, damit es nicht laggt (Radius 15)
-                        local dist = (char.HumanoidRootPart.Position - v.Parent.Position).Magnitude
-                        if dist < 15 then
+                        local char = game.Players.LocalPlayer.Character
+                        if char and (char.HumanoidRootPart.Position - v.Parent.Position).Magnitude < 15 then
                             fireproximityprompt(v)
                         end
                     end
                 end
             end
-        end
-    end    
-})
-
--- "Main" Tab für Speed & Jump
-local MainTab = Window:MakeTab({
-    Name = "Main",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-MainTab:AddSlider({
-    Name = "WalkSpeed",
-    Min = 16,
-    Max = 500,
-    Default = 16,
-    Color = Color3.fromRGB(80, 120, 255),
-    Increment = 1,
-    ValueName = "Tempo",
-    Callback = function(Value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-    end    
-})
-
-MainTab:AddButton({
-    Name = "Anti-Ragdoll",
-    Callback = function()
-        local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("Ragdoll") then
-            char.Ragdoll:Destroy()
-        end
+        end)
     end
-})
-
-OrionLib:Init()
+end)
